@@ -1,0 +1,42 @@
+/* Ensure this is in your assets/styles.css file */
+:root {
+    --text-color: #333333;
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --background-color: #f5f7fa;
+}
+
+body {
+    color: var(--text-color) !important;
+    background-color: var(--background-color) !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--primary-color) !important;
+}
+
+.stTextInput label,
+.stPassword label,
+.stSelectbox label {
+    color: var(--text-color) !important;
+    font-weight: 500 !important;
+}
+
+/* Card styles */
+.metric-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 1rem;
+    color: var(--text-color) !important;
+}
+
+/* Navbar fixes */
+[data-testid="stSidebar"] {
+    background-color: var(--primary-color) !important;
+}
+
+.custom-nav-item a {
+    color: white !important;
+}
