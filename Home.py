@@ -1,4 +1,3 @@
-# main.py
 import streamlit as st
 import sqlite3
 import hashlib
@@ -78,55 +77,6 @@ if not st.session_state.authenticated:
     st.markdown("---")
     st.caption("Our privacy policy")
     st.stop()
-
-# Fallback navigation
-with st.sidebar:
-    # Add this to your CSS in main.py (replace the existing CSS)
-    st.markdown("""
-    <style>
-        /* Base styles - applies to all pages */
-        :root {
-            --text-color: #333333;
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-        }
-
-        /* Login page specific fixes */
-        .stApp {
-            background-color: #f5f7fa !important;
-        }
-
-        h1 {
-            color: var(--primary-color) !important;
-        }
-
-        /* Hide all navigation elements */
-        [data-testid="stSidebar"],
-        [data-testid="collapsedControl"],
-        [data-testid="stHeader"],
-        [data-testid="manage-app-button"],
-        [data-testid="baseButton-header"] {
-            display: none !important;
-        }
-
-        /* Form input labels */
-        .stTextInput label,
-        .stPassword label,
-        .stSelectbox label {
-            color: var(--text-color) !important;
-            font-weight: 500 !important;
-        }
-
-        /* Remove Streamlit's default hamburger menu */
-        .st-emotion-cache-6qob1r {
-            display: none !important;
-        }
-    </style>
-    """, unsafe_allow_html=True)
-
-    if st.button("Logout", type="primary"):
-        st.session_state.clear()
-        st.rerun()
 
 st.title(f"{st.session_state.current_role} Dashboard")
 st.warning("Redirect failed - please use the sidebar navigation")

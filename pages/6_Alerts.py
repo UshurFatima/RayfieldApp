@@ -1,5 +1,6 @@
 import streamlit as st
-
+import pandas as pd
+from utils.db import get_db_connection
 
 def get_dashboard_file(role):
     mapping = {
@@ -54,83 +55,54 @@ def show_navbar():
         st.markdown("</div>", unsafe_allow_html=True)
 
 
-
 def load_css():
     with open("assets/styles.css") as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 
 load_css()
-show_navbar()
 
+st.set_page_config(page_title="Alerts", layout="wide")
 
-st.set_page_config(
-    page_title="Analyst Dashboard",
-    layout="wide"
-)
-
-# Authentication check
-if 'current_role' not in st.session_state or st.session_state.current_role != "Analyst":
-    st.error("You don't have permission to view this page")
+# Auth check
+if "authenticated" not in st.session_state or not st.session_state.authenticated:
+    st.error("Please login to view alerts")
     st.stop()
 
-# Main Dashboard
-st.title("Analyst")
+show_navbar()
 
-# Dashboard Tabs
-st.title("Analyst Dashboard")
+st.title("🚨 Alerts Overview")
+st.markdown("View and manage alert history across all systems.")
+st.divider()
 
-st.subheader("AI-suggested Insight")
-st.markdown("""
-<div class="metric-card">
-    <p>"12% deviation in Bearing Temp correlates with:</p>
-    <ul>
-        <li>Past failures (87% match)</li>
-        <li>Weather patterns (73% correlation)</li>
-    </ul>
-</div>
-""", unsafe_allow_html=True)
+conn = get_db_connection()
+alerts = pd.read_sql("SELECT * FROM alerts", conn)
+conn.close()
 
-col1, col2, col3 = st.columns(3)
-with col1:
-    st.button("Confirm")
-with col2:
-    st.button("Decline")
-with col3:
-    st.button("Compare Similar Cases")
+# Show alerts in sections
+severity_levels = ["High", "Medium", "Low"]
+for level in severity_levels:
+    st.subheader(f"{level}-Priority Alerts")
 
-st.markdown("## Active Models")
-col1, col2 = st.columns(2)
-with col1:
-    st.markdown("""
-    <div class="metric-card">
-        <p><strong>Vibration Analysis v3.2</strong></p>
-        <p>Accuracy: 92%</p>
-    </div>
-    """, unsafe_allow_html=True)
-with col2:
-    st.markdown("""
-    <div class="metric-card">
-        <p><strong>Thermal Anomaly Detector v2.1</strong></p>
-        <p>Accuracy: 88%</p>
-    </div>
-    """, unsafe_allow_html=True)
+    filtered = alerts[alerts['severity'] == level]
+    if filtered.empty:
+        st.info(f"No {level.lower()} priority alerts")
+        continue
 
-col1, col2, col3 = st.columns(3)
-with col1:
-    st.button("Retrain Selected Model")
-with col2:
-    st.button("Deploy New Model")
-with col3:
-    st.button("Model Performance Alerts")
+    for _, row in filtered.iterrows():
+        st.markdown(f"""
+        <div class="metric-card">
+            <p><strong>Asset:</strong> {row['asset_id']}</p>
+            <p><strong>Status:</strong> {row['severity']}</p>
+            <p><strong>Detected:</strong> {row['detected']}</p>
+            <p><strong>Metric:</strong> {row['metric']}</p>
+            <p><strong>Likely Cause:</strong> {row['likely_cause']}</p>
+            <p><strong>Suggested Action:</strong> {row['suggested_action']}</p>
+        </div>
+        """, unsafe_allow_html=True)
 
-st.markdown("## Quick Analysis Types")
-st.markdown("""
-1. Cross-Asset Correlation  
-2. Event Sequence Mining  
-3. Maintenance Impact Study  
-""")
-
-st.markdown("## Recent Templates")
-st.button("Wind Speed vs. Gearbox Failures")
-st.button("Time-to-Repair by Technician")
+        btn_cols = st.columns(2)
+        with btn_cols[0]:
+            st.button("Assign Task", key=f"assign_{row['id']}")
+        with btn_cols[1]:
+            st.button("View Asset History", key=f"history_{row['id']}")

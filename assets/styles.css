@@ -1,42 +1,85 @@
-/* Ensure this is in your assets/styles.css file */
 :root {
-    --text-color: #333333;
-    --primary-color: #2c3e50;
-    --secondary-color: #3498db;
-    --background-color: #f5f7fa;
+    --text-color: #000000;             /* Black */
+    --primary-color: #2563eb;          /* Light Blue */
+    --button-text: #000000;            /* Black on buttons */
+    --background-color: #ffffff;       /* White main background */
+    --card-bg: #f3f4f6;                /* Light grey card */
+    --navbar-bg: #374151;              /* Dark grey navbar */
+    --navbar-text: #ffffff;            /* White navbar text */
+    --border-radius: 10px;
+    --shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 body {
-    color: var(--text-color) !important;
     background-color: var(--background-color) !important;
+    color: var(--text-color) !important;
+    font-family: 'Segoe UI', sans-serif;
 }
 
+/* Headings */
 h1, h2, h3, h4, h5, h6 {
-    color: var(--primary-color) !important;
+    color: var(--text-color) !important;
 }
 
+/* Cards */
+.metric-card, .profile-card, .alert-high {
+    background: var(--card-bg);
+    color: var(--text-color) !important;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    margin-bottom: 1.5rem;
+}
+
+/* Alert Card */
+.alert-high {
+    border-left: 5px solid red;
+    background-color: #fee2e2;
+}
+
+/* Buttons */
+.stButton > button {
+    background-color: var(--primary-color);
+    color: var(--button-text);
+    border-radius: var(--border-radius);
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    border: none;
+    box-shadow: var(--shadow);
+}
+
+.stButton > button:hover {
+    background-color: #3b82f6;
+    color: var(--button-text);
+}
+
+/* Form labels */
 .stTextInput label,
 .stPassword label,
 .stSelectbox label {
     color: var(--text-color) !important;
-    font-weight: 500 !important;
+    font-weight: 500;
 }
 
-/* Card styles */
-.metric-card {
-    background: white;
-    border-radius: 8px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    margin-bottom: 1rem;
-    color: var(--text-color) !important;
+/* Top Navigation Bar */
+.navbar {
+    background-color: var(--navbar-bg);
+    padding: 1rem 2rem;
+    margin-bottom: 1.5rem;
 }
 
-/* Navbar fixes */
-[data-testid="stSidebar"] {
-    background-color: var(--primary-color) !important;
+.navbar a {
+    color: var(--navbar-text);
+    margin-right: 20px;
+    font-weight: 500;
+    text-decoration: none;
 }
 
-.custom-nav-item a {
-    color: white !important;
+.navbar a:hover {
+    text-decoration: underline;
+}
+
+/* Hide Streamlit default header */
+[data-testid="stHeader"] {
+    display: none;
 }

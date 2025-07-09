@@ -65,72 +65,57 @@ show_navbar()
 
 
 st.set_page_config(
-    page_title="Analyst Dashboard",
+    page_title="📋 Task Manager",
     layout="wide"
 )
 
-# Authentication check
-if 'current_role' not in st.session_state or st.session_state.current_role != "Analyst":
-    st.error("You don't have permission to view this page")
+# Auth check
+if "authenticated" not in st.session_state or not st.session_state.authenticated:
+    st.error("Please login to view this page")
     st.stop()
 
-# Main Dashboard
-st.title("Analyst")
+# Page Title
+st.title("🗓️ Task Calendar")
 
-# Dashboard Tabs
-st.title("Analyst Dashboard")
+# Calendar Header
+st.markdown("#### June 2025 | June 16 – 22")
+st.divider()
 
-st.subheader("AI-suggested Insight")
+# Top-level Buttons
+col1, col2, col3, col4 = st.columns(4)
+with col1:
+    st.button("Print Work Order", use_container_width=True)
+with col2:
+    st.file_uploader("Upload New", type=["pdf", "csv"], label_visibility="collapsed")
+with col3:
+    st.button("Notify Technician", use_container_width=True)
+with col4:
+    st.button("Cancel Task", use_container_width=True)
+
+st.markdown("---")
+
+# Task Card
+st.subheader("Wind Turbine Inspection")
 st.markdown("""
 <div class="metric-card">
-    <p>"12% deviation in Bearing Temp correlates with:</p>
+    <p><strong>Priority:</strong> High (4/5)</p>
+    <p><strong>Due:</strong> 2025-06-20 14:30</p>
+    <p><strong>Notes:</strong> Check phase imbalance – similar to 2025-04 incident</p>
+    <p><strong>Attachments:</strong></p>
     <ul>
-        <li>Past failures (87% match)</li>
-        <li>Weather patterns (73% correlation)</li>
+        <li>sensor_readings_023.csv</li>
     </ul>
 </div>
 """, unsafe_allow_html=True)
 
+st.markdown("---")
+
+# Task Actions
 col1, col2, col3 = st.columns(3)
 with col1:
-    st.button("Confirm")
+    st.button("Start Task", use_container_width=True)
 with col2:
-    st.button("Decline")
+    st.button("Add Notes", use_container_width=True)
 with col3:
-    st.button("Compare Similar Cases")
+    st.button("View Details", use_container_width=True)
 
-st.markdown("## Active Models")
-col1, col2 = st.columns(2)
-with col1:
-    st.markdown("""
-    <div class="metric-card">
-        <p><strong>Vibration Analysis v3.2</strong></p>
-        <p>Accuracy: 92%</p>
-    </div>
-    """, unsafe_allow_html=True)
-with col2:
-    st.markdown("""
-    <div class="metric-card">
-        <p><strong>Thermal Anomaly Detector v2.1</strong></p>
-        <p>Accuracy: 88%</p>
-    </div>
-    """, unsafe_allow_html=True)
-
-col1, col2, col3 = st.columns(3)
-with col1:
-    st.button("Retrain Selected Model")
-with col2:
-    st.button("Deploy New Model")
-with col3:
-    st.button("Model Performance Alerts")
-
-st.markdown("## Quick Analysis Types")
-st.markdown("""
-1. Cross-Asset Correlation  
-2. Event Sequence Mining  
-3. Maintenance Impact Study  
-""")
-
-st.markdown("## Recent Templates")
-st.button("Wind Speed vs. Gearbox Failures")
-st.button("Time-to-Repair by Technician")

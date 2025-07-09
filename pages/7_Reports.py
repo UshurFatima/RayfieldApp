@@ -1,4 +1,6 @@
 import streamlit as st
+from utils.db import get_db_connection
+import pandas as pd
 
 
 def get_dashboard_file(role):
@@ -54,7 +56,6 @@ def show_navbar():
         st.markdown("</div>", unsafe_allow_html=True)
 
 
-
 def load_css():
     with open("assets/styles.css") as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
@@ -63,74 +64,69 @@ def load_css():
 load_css()
 show_navbar()
 
-
 st.set_page_config(
-    page_title="Analyst Dashboard",
+    page_title="Reports Dashboard",
     layout="wide"
 )
 
 # Authentication check
-if 'current_role' not in st.session_state or st.session_state.current_role != "Analyst":
-    st.error("You don't have permission to view this page")
+if 'current_role' not in st.session_state:
+    st.error("Please login first")
     st.stop()
 
 # Main Dashboard
-st.title("Analyst")
+st.title("📊 Reports Dashboard")
 
-# Dashboard Tabs
-st.title("Analyst Dashboard")
-
-st.subheader("AI-suggested Insight")
-st.markdown("""
-<div class="metric-card">
-    <p>"12% deviation in Bearing Temp correlates with:</p>
-    <ul>
-        <li>Past failures (87% match)</li>
-        <li>Weather patterns (73% correlation)</li>
-    </ul>
-</div>
-""", unsafe_allow_html=True)
-
+# Metrics Overview
+st.header("Key Metrics")
 col1, col2, col3 = st.columns(3)
-with col1:
-    st.button("Confirm")
-with col2:
-    st.button("Decline")
-with col3:
-    st.button("Compare Similar Cases")
-
-st.markdown("## Active Models")
-col1, col2 = st.columns(2)
 with col1:
     st.markdown("""
     <div class="metric-card">
-        <p><strong>Vibration Analysis v3.2</strong></p>
-        <p>Accuracy: 92%</p>
+        <h3>Maintenance Summary</h3>
+        <h1>78%</h1>
     </div>
     """, unsafe_allow_html=True)
 with col2:
     st.markdown("""
     <div class="metric-card">
-        <p><strong>Thermal Anomaly Detector v2.1</strong></p>
-        <p>Accuracy: 88%</p>
+        <h3>Downtime Analysis</h3>
+        <h1>75%</h1>
+    </div>
+    """, unsafe_allow_html=True)
+with col3:
+    st.markdown("""
+    <div class="metric-card">
+        <h3>Equipment Overview</h3>
+        <h1>90%</h1>
     </div>
     """, unsafe_allow_html=True)
 
-col1, col2, col3 = st.columns(3)
-with col1:
-    st.button("Retrain Selected Model")
-with col2:
-    st.button("Deploy New Model")
-with col3:
-    st.button("Model Performance Alerts")
+# Detailed Reports
+st.header("Detailed Reports")
+conn = get_db_connection()
 
-st.markdown("## Quick Analysis Types")
-st.markdown("""
-1. Cross-Asset Correlation  
-2. Event Sequence Mining  
-3. Maintenance Impact Study  
-""")
+# Asset Status Report
+with st.expander("Asset Status Report", expanded=True):
+    assets = pd.read_sql("SELECT name, status, location, alerts FROM assets", conn)
+    st.dataframe(
+        assets,
+        use_container_width=True,
+        hide_index=True
+    )
 
-st.markdown("## Recent Templates")
-st.button("Wind Speed vs. Gearbox Failures")
-st.button("Time-to-Repair by Technician")
+# Maintenance History
+with st.expander("Maintenance History"):
+    work_orders = pd.read_sql("SELECT * FROM alerts", conn)
+    st.dataframe(work_orders)
+
+conn.close()
+
+# Export Options
+st.divider()
+st.download_button(
+    "Download Full Report",
+    data=assets.to_csv().encode('utf-8'),
+    file_name='asset_report.csv',
+    mime='text/csv'
+)
