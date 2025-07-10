@@ -93,11 +93,20 @@ st.markdown("""
 
 col1, col2, col3 = st.columns(3)
 with col1:
-    st.button("Confirm")
+    if st.button("Confirm"):
+        st.success("Insight confirmed and added to knowledge base!")
 with col2:
-    st.button("Decline")
+    if st.button("Decline"):
+        st.warning("Insight declined and marked for review.")
 with col3:
-    st.button("Compare Similar Cases")
+    if st.button("Compare Similar Cases"):
+        st.info("Loading similar cases...")
+        st.markdown("""
+        **Similar Cases Found:**
+        - Case #2024-045: Bearing failure at 12.3% deviation (2024-08-15)
+        - Case #2024-032: Bearing failure at 11.8% deviation (2024-07-22)
+        - Case #2024-018: Bearing failure at 12.1% deviation (2024-06-10)
+        """)
 
 st.markdown("## Active Models")
 col1, col2 = st.columns(2)
@@ -118,11 +127,18 @@ with col2:
 
 col1, col2, col3 = st.columns(3)
 with col1:
-    st.button("Retrain Selected Model")
+    if st.button("Retrain Selected Model"):
+        st.success("Model retraining initiated! Estimated completion: 2 hours")
 with col2:
-    st.button("Deploy New Model")
+    if st.button("Deploy New Model"):
+        st.success("New model deployment started! Will be active in 30 minutes")
 with col3:
-    st.button("Model Performance Alerts")
+    if st.button("Model Performance Alerts"):
+        st.info("Model Performance Alerts:")
+        st.markdown("""
+        - Vibration Analysis v3.2: Performance dropped 2% in last week
+        - Thermal Anomaly Detector v2.1: 5 false positives detected
+        """)
 
 st.markdown("## Quick Analysis Types")
 st.markdown("""
@@ -132,5 +148,21 @@ st.markdown("""
 """)
 
 st.markdown("## Recent Templates")
-st.button("Wind Speed vs. Gearbox Failures")
-st.button("Time-to-Repair by Technician")
+if st.button("Wind Speed vs. Gearbox Failures"):
+    st.info("Loading Wind Speed vs. Gearbox Failures analysis...")
+    st.markdown("""
+    **Analysis Results:**
+    - Correlation coefficient: 0.73
+    - High wind speeds (>15 m/s) increase failure risk by 45%
+    - Recommended: Increase inspection frequency during high wind periods
+    """)
+
+if st.button("Time-to-Repair by Technician"):
+    st.info("Loading Time-to-Repair analysis...")
+    st.markdown("""
+    **Technician Performance:**
+    - John Smith: Average repair time 2.3 hours
+    - Sarah Johnson: Average repair time 1.8 hours
+    - Mike Wilson: Average repair time 2.7 hours
+    - Recommended: Assign Sarah to critical repairs
+    """)

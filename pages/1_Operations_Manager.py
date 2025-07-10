@@ -127,6 +127,8 @@ st.dataframe(
 
 col1, col2 = st.columns(2)
 with col1:
-    st.button("VIEW ALERTS", use_container_width=True)
+    if st.button("VIEW ALERTS", use_container_width=True):
+        st.switch_page("pages/6_Alerts.py")
 with col2:
-    st.button("SCHEDULE MAINTENANCE", use_container_width=True)
+    if st.button("SCHEDULE MAINTENANCE", use_container_width=True):
+        st.switch_page("pages/8_Tasks.py")
