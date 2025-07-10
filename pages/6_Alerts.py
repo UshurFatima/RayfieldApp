@@ -103,6 +103,37 @@ for level in severity_levels:
 
         btn_cols = st.columns(2)
         with btn_cols[0]:
-            st.button("Assign Task", key=f"assign_{row['id']}")
+            if st.button("Assign Task", key=f"assign_{row['id']}"):
+                st.success(f"Task assigned for alert on asset {row['asset_id']}")
         with btn_cols[1]:
-            st.button("View Asset History", key=f"history_{row['id']}")
+            if st.button("View Asset History", key=f"history_{row['id']}"):
+                st.session_state.show_asset_history = True
+                st.session_state.selected_asset = row['asset_id']
+
+# Asset History Modal
+if st.session_state.get("show_asset_history", False):
+    st.markdown("### Asset History")
+    asset_id = st.session_state.get("selected_asset", "")
+    
+    # Simulate asset history data
+    st.markdown(f"""
+    **Asset:** {asset_id}
+    
+    **Recent Alerts:**
+    - 2025-06-15: High priority - Temperature threshold exceeded
+    - 2025-06-10: Medium priority - Vibration levels elevated
+    - 2025-06-05: Low priority - Maintenance due
+    
+    **Maintenance History:**
+    - 2025-05-20: Scheduled maintenance completed
+    - 2025-04-15: Emergency repair - Phase imbalance
+    - 2025-03-10: Routine inspection
+    
+    **Performance Metrics:**
+    - Uptime: 94.2%
+    - Last inspection: 2025-06-01
+    - Next scheduled maintenance: 2025-07-15
+    """)
+    
+    if st.button("Close History"):
+        st.session_state.show_asset_history = False
