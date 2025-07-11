@@ -1,6 +1,44 @@
 import streamlit as st
 from utils.db import get_db_connection
 import pandas as pd
+from utils.ai_module import preprocess_solar_data, train_isolation_forest, detect_anomalies
+
+
+def show_solar_analytics():
+    st.subheader("Solar Generation Analytics")
+
+    try:
+        solar_data = pd.read_csv("utils/cleaned_solar_data_reduced.csv")
+        X_scaled, scaler, processed_data = preprocess_solar_data(solar_data)
+        model = train_isolation_forest(X_scaled)
+        results = detect_anomalies(model, X_scaled, processed_data)
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.markdown("### Generation Overview")
+            st.line_chart(results.set_index('timestamp')['generation_kw'])
+
+        with col2:
+            st.markdown("### Anomaly Distribution")
+            anomaly_count = results['is_anomaly'].value_counts()
+            st.bar_chart(anomaly_count)
+
+        with st.expander("Detailed Anomaly Report"):
+            anomalies = results[results['is_anomaly'] == 1]
+            st.dataframe(anomalies[['timestamp', 'generation_kw', 'hour', 'day_of_week']])
+
+            if st.button("Export Anomaly Report"):
+                csv = anomalies.to_csv(index=False).encode('utf-8')
+                st.download_button(
+                    label="Download CSV",
+                    data=csv,
+                    file_name='solar_anomalies.csv',
+                    mime='text/csv'
+                )
+
+    except Exception as e:
+        st.error(f"Error loading solar data: {str(e)}")
 
 
 def get_dashboard_file(role):
@@ -105,6 +143,8 @@ with col3:
 # Detailed Reports
 st.header("Detailed Reports")
 conn = get_db_connection()
+
+show_solar_analytics()
 
 # Asset Status Report
 with st.expander("Asset Status Report", expanded=True):

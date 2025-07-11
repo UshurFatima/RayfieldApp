@@ -1,6 +1,48 @@
 import streamlit as st
 import pandas as pd
 from utils.db import get_db_connection
+from datetime import datetime
+from utils.ai_module import preprocess_solar_data, train_isolation_forest, detect_anomalies, generate_solar_summary
+
+
+def show_solar_alerts():
+    st.subheader("Solar Generation Anomalies")
+
+    # Load and process solar data
+    try:
+        solar_data = pd.read_csv("utils/cleaned_solar_data_reduced.csv")
+        X_scaled, scaler, processed_data = preprocess_solar_data(solar_data)
+        model = train_isolation_forest(X_scaled)
+        results = detect_anomalies(model, X_scaled, processed_data)
+
+        # Get the 10 most recent anomalies
+        anomalies = results[results['is_anomaly'] == 1].sort_values('timestamp', ascending=False).head(10)
+
+        if anomalies.empty:
+            st.success("No recent solar generation anomalies detected")
+            return
+
+        for _, row in anomalies.iterrows():
+            with st.expander(f"Anomaly detected at {row['timestamp']}"):
+                st.metric("Generation", f"{row['generation_kw']:,.2f} kW")
+                st.write(f"**Time:** {row['timestamp']}")
+                st.write(f"**Hour of day:** {row['hour']}:00")
+                st.write(f"**Day of week:** {['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][row['day_of_week']]}")
+
+                if st.button("Create Maintenance Ticket", key=f"solar_{row['timestamp']}"):
+                    conn = get_db_connection()
+                    c = conn.cursor()
+                    # Convert the timestamp to a string format
+                    timestamp_str = row['timestamp'].strftime("%Y-%m-%d %H:%M:%S")
+                    c.execute("INSERT INTO solar_alerts (timestamp, generation_kw, detected) VALUES (?, ?, ?)",
+                              (timestamp_str, row['generation_kw'], datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+                    conn.commit()
+                    conn.close()
+                    st.success("Maintenance ticket created!")
+
+    except Exception as e:
+        st.error(f"Error processing solar data: {str(e)}")
+
 
 def get_dashboard_file(role):
     mapping = {
@@ -137,3 +179,6 @@ if st.session_state.get("show_asset_history", False):
     
     if st.button("Close History"):
         st.session_state.show_asset_history = False
+
+
+show_solar_alerts()

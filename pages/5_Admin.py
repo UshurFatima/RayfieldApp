@@ -118,25 +118,25 @@ with tab2:
     conn = get_db_connection()
     users = pd.read_sql("SELECT email, role FROM users", conn)
 
-    # Editable user table
-    edited_users = st.data_editor(
-        users,
-        disabled=["email"],
-        use_container_width=True
+    selected_emails = st.multiselect(
+        "Select users to delete:",
+        options=users["email"],
+        format_func=lambda x: f"{x} ({users[users['email'] == x]['role'].values[0]})"
     )
 
-    # Delete selected users
     if st.button("Delete Selected", type="primary"):
         deleted_count = 0
-        for email in edited_users.loc[edited_users.index.difference(users.index), 'email']:
+        for email in selected_emails:
             conn.execute("DELETE FROM users WHERE email = ?", (email,))
             deleted_count += 1
         conn.commit()
         if deleted_count > 0:
-            st.success(f"Deleted {deleted_count} users")
+            st.success(f"Deleted {deleted_count} user(s)")
             st.rerun()
 
     conn.close()
+
+
 
 # System Configuration Section
 st.header("⚙️ System Configuration")

@@ -71,5 +71,18 @@ def init_db():
             "INSERT INTO alerts (asset_id, severity, detected, metric, likely_cause, suggested_action) VALUES (?, ?, ?, ?, ?, ?)",
             sample_alerts)
 
+    c.execute('''CREATE TABLE IF NOT EXISTS solar_data
+                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                  timestamp TEXT,
+                  generation_kw REAL,
+                  is_anomaly INTEGER DEFAULT 0)''')
+
+    c.execute('''CREATE TABLE IF NOT EXISTS solar_alerts
+                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                  timestamp TEXT,
+                  generation_kw REAL,
+                  deviation REAL,
+                  detected TEXT)''')
+
     conn.commit()
     conn.close()
