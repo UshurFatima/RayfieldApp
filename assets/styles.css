@@ -1,11 +1,11 @@
 :root {
-    --text-color: #000000;             /* Black */
-    --primary-color: #2563eb;          /* Light Blue */
-    --button-text: #000000;            /* Black on buttons */
-    --background-color: #ffffff;       /* White main background */
-    --card-bg: #f3f4f6;                /* Light grey card */
-    --navbar-bg: #374151;              /* Dark grey navbar */
-    --navbar-text: #ffffff;            /* White navbar text */
+    --text-color: #000000;
+    --primary-color: #2563eb;
+    --button-text: #000000;
+    --background-color: #ffffff;
+    --card-bg: #f3f4f6;
+    --navbar-bg: #374151;
+    --navbar-text: #ffffff;
     --border-radius: 10px;
     --shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }

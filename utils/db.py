@@ -1,6 +1,5 @@
 import sqlite3
 import hashlib
-import pandas as pd
 
 
 def get_db_connection():

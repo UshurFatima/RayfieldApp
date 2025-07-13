@@ -1,7 +1,6 @@
 import pandas as pd
 from utils.ai_module import preprocess_solar_data, train_isolation_forest, detect_anomalies
 from utils.db import get_db_connection
-import sqlite3
 
 
 def update_solar_data():

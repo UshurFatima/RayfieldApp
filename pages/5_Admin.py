@@ -137,7 +137,6 @@ with tab2:
     conn.close()
 
 
-
 # System Configuration Section
 st.header("⚙️ System Configuration")
 with st.expander("Database Maintenance"):

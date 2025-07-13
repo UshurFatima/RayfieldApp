@@ -69,7 +69,6 @@ st.set_page_config(
     layout="wide"
 )
 
-# Add this additional CSS specifically for profile page
 st.markdown("""
 <style>
     .profile-container {
@@ -90,12 +89,10 @@ if "authenticated" not in st.session_state or not st.session_state.authenticated
     st.error("Please login to view your profile")
     st.stop()
 
-# Main Profile with fixed colors
 st.markdown("<div class='profile-container'>", unsafe_allow_html=True)
 
 st.title("👤 My Profile")
 
-# User Info Card with proper colors
 st.markdown(f"""
 <div class="profile-card">
     <h3 style='color: var(--primary-color)'>Account Information</h3>
@@ -141,4 +138,4 @@ with st.container():
 
     st.markdown("</div>", unsafe_allow_html=True)
 
-st.markdown("</div>", unsafe_allow_html=True)  # Close profile-container
+st.markdown("</div>", unsafe_allow_html=True)

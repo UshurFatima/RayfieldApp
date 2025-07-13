@@ -61,13 +61,12 @@ def show_navbar():
         st.markdown("</div>", unsafe_allow_html=True)
 
 
-
 def load_css():
     with open("assets/styles.css") as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
+
 def generate_work_order_pdf():
-    """Generate a PDF work order for the current task"""
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter)
     story = []
